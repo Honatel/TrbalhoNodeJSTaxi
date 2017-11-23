@@ -31,8 +31,7 @@ http.createServer(function (req, res) {
         res.end(`Error getting the file: ${err}.`);
       } else {
         var client = new Client();
-        client.teste("Honatel");
-        console.log(client.client())
+        client.process(data.toString());
         res.end(data);
       }
     });
