@@ -9,6 +9,7 @@ function processData(evt) {
 
     var fileArr = evt.split('\n');
     var listObject = new Array();
+    //teste
   
     for (var i=0; i<fileArr.length; i++) {
         var fileLine = fileArr[i].split(';');
