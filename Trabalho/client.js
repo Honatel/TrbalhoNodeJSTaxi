@@ -57,22 +57,22 @@ function processData(){
                    }
                 }
 
-                return CalcRadiusDistance(lat1, lon1, lat2, lon2);
+                return CalcRadiusDistance(lat1, lon1, lat2, lon2, "K");
             };
             
             function CalcRadiusDistance(lat1, lon1, lat2, lon2)
             {
-            rad = function(x) {return x*Math.PI/180;}
+                rad = function(x) {return x*Math.PI/180;}
           
-            var R     = 6378.137;                  //Raio da Terra no km (WGS84)
-            var dLat  = rad( lat2 - lat1 );
-            var dLong = rad( lon2 - lon1 );
+                var R     = 6378.137;                  //Raio da Terra no km (WGS84)
+                var dLat  = rad( lat2 - lat1 );
+                var dLong = rad( lon2 - lon1 );
           
-            var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLong/2) * Math.sin(dLong/2);
-            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-            var d = R * c;
-          
-            return parseFloat(d.toFixed(3));                   //Retorno 3 casas decimais
+                var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLong/2) * Math.sin(dLong/2);
+                var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                var d = R * c;
+
+                return  parseFloat(d.toFixed(3));
            };
 
            function dijkstra(start, graph) {
@@ -89,22 +89,23 @@ function processData(){
                 });
             
                 distance[start] = 0;
-            
                 while (Object.keys(vertices).length > 0) {
-                    // Obtain a vertex whose distaance is minimum.
+                    // Obtenha um vértice cuja separação seja mínima.
                     u = Object.keys(vertices).reduce(function(prev, v_i) {
                         return distance[prev] > distance[v_i] ? +v_i : prev;
                     }, Object.keys(vertices)[0]);
             
-                    graph.edge.filter(function(edge) {
+                    graph.edge.filter(function(edge) { //verifica se o array de conexão das arestas, se preenchem os requisitos abaixo e constroi um array
                         var from = edge[0],
                             to 	 = edge[1];
-                        return from===u || to===u;
+                        return from=== `${u}` || to===`${u}`;
                     })
                     .forEach(function(edge) {
-                        var to = edge[1]===u ? edge[0] : edge[1],
-                            dist = distance[u] + edge[2];
-            
+                        var to = edge[1]===u ? edge[0] : edge[1];
+
+                        //var dist = distance[u] === Infinity ?edge[2] :distance[u] + edge[2];
+                        var dist = distance[u] + edge[2];
+                        
                         if (distance[to] > dist) {
                             distance[to] = dist;
                             prev[to] = u;
@@ -113,6 +114,26 @@ function processData(){
                     // Mark visited
                     delete vertices[u];
                 }
+                
+                var ArrayPev = new Array();
+                var indiceArrayPrav = 0;
+                var valuein = 0;
+                for (ind = Object.keys(prev).length; ind >= 1; ind--){
+                    
+                    if(ind == Object.keys(prev).length){
+                        ArrayPev[indiceArrayPrav] = ind;
+                        indiceArrayPrav++;
+                        ArrayPev[indiceArrayPrav] = parseInt(prev[ind]);
+                        valuein= parseInt(prev[ind]);
+                        indiceArrayPrav++;
+                    }
+
+                    if (valuein == ind && ind != Object.keys(prev).length){
+                        ArrayPev[indiceArrayPrav] = parseInt(prev[ind]);
+                        indiceArrayPrav++;
+                    }
+                };
+                console.log(ArrayPev);
                 return distance;
             };
         
@@ -144,7 +165,6 @@ function processData(){
                 index++;
 
                 if (principal == 32){
-                debugger;
                     // var graph = {
                     //     vertex: valuesArray,
                     //     edge:               
@@ -152,15 +172,21 @@ function processData(){
                     // };
                     // console.log(dijkstra("2", graph));
                     var graph = {
-                        vertex: ["1","2","3"],
+                        vertex: ["1","2","3","4","5","6"],
                         edge: [,
                         /* vertex1, vertex2, weight */
-                            ["1", "2", 4],
-                            ["1", "3", 7],
-                            ["2", "3", 1]
+                            ["1", "2", 7],
+                            ["1", "3", 9],
+                            ["1", "6", 14],
+                            ["2", "3", 10],
+                            ["2", "4", 15],
+                            ["3", "4", 11],
+                            ["3", "6", 2],
+                            ["4", "5", 6],
+                            ["5", "6", 9]
                         ]
                     };
-                    console.log(dijkstra("1", graph));                    
+                    console.log(dijkstra("2", graph));                    
                     return false;
                 }
             };
